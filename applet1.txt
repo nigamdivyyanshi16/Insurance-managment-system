@@ -1,0 +1,80 @@
+import java.applet.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+
+public class InsuranceSystem extends Applet implements ActionListener {
+   Label nameLbl = new Label("Name:");
+   TextField nameTxt = new TextField(20);
+   Label addressLbl = new Label("Address:");
+   TextField addressTxt = new TextField(20);
+   Label ageLbl = new Label("Age:");
+   TextField ageTxt = new TextField(3);
+   Label genderLbl = new Label("Gender:");
+   CheckboxGroup genderGrp = new CheckboxGroup();
+   Checkbox maleChk = new Checkbox("Male", genderGrp, true);
+   Checkbox femaleChk = new Checkbox("Female", genderGrp, false);
+   Label policyLbl = new Label("Policy Type:");
+   Choice policyType = new Choice();
+   Button submitBtn = new Button("Submit");
+   Button resetBtn = new Button("Reset");
+   TextArea resultArea = new TextArea("", 10, 30, TextArea.SCROLLBARS_VERTICAL_ONLY);
+
+   public void init() {
+      setLayout(new GridLayout(7, 2));
+      add(nameLbl);
+      add(nameTxt);
+      add(addressLbl);
+      add(addressTxt);
+      add(ageLbl);
+      add(ageTxt);
+      add(genderLbl);
+      add(maleChk);
+      add(new Label(""));
+      add(femaleChk);
+      policyType.add("Life Insurance");
+      policyType.add("Vehicle Insurance");
+      policyType.add("Health Insurance");
+      add(policyLbl);
+      add(policyType);
+      add(submitBtn);
+      add(resetBtn);
+      submitBtn.addActionListener(this);
+      resetBtn.addActionListener(this);
+      add(resultArea);
+   }
+
+   public void actionPerformed(ActionEvent e) {
+      if (e.getSource() == submitBtn) {
+         String name = nameTxt.getText();
+         String address = addressTxt.getText();
+         int age = Integer.parseInt(ageTxt.getText());
+         String gender = "";
+         if (maleChk.getState()) {
+            gender = "Male";
+         } else {
+            gender = "Female";
+         }
+         String policy = policyType.getSelectedItem();
+         String result = "Name: " + name + "\n" + "Address: " + address + "\n" + "Age: " + age + "\n" + "Gender: " + gender + "\n" + "Policy Type: " + policy + "\n";
+         resultArea.append(result);
+
+         try {
+            FileWriter writer = new FileWriter("insurance.txt", true);
+            writer.write(result);
+            writer.close();
+         } catch (IOException ex) {
+            ex.printStackTrace();
+         }
+
+      } else if (e.getSource() == resetBtn) {
+         nameTxt.setText("");
+         addressTxt.setText("");
+         ageTxt.setText("");
+         maleChk.setState(true);
+         femaleChk.setState(false);
+         policyType.select(0);
+         resultArea.setText("");
+      }
+   }
+}
